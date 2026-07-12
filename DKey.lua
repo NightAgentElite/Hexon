@@ -1,1 +1,1 @@
-smthsmth
+return "newkey"
