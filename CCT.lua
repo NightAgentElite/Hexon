@@ -1,5 +1,7 @@
 local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
+local DKey = loadstring(game:HttpGet("https://raw.githubusercontent.com/36kshania-jpg/ahahexon.lua/refs/heads/main/DKey.lua"))()
+
 local Window = Rayfield:CreateWindow({
 Name = "Hexon",
 ShowText = "Hexon",
@@ -12,7 +14,7 @@ Theme = "Green",
 ConfigurationSaving = {  
     Enabled = false,  
     FolderName = "Hexon CCT",  
-    FileName = "Helixified File"  
+    FileName = "AutomaticSave"  
 },  
 
 KeySystem = true,
@@ -28,7 +30,7 @@ SaveKey = false,
 GrabKeyFromSite = false,  
 
 Key = {  
-    "tst"  
+    DKey  
 }
 
 }
