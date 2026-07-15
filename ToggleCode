@@ -126,6 +126,60 @@ StrokeGradient.Color = ColorSequence.new({
     ColorSequenceKeypoint.new(0, Color3.fromRGB(189,189,189)),
     ColorSequenceKeypoint.new(1, Color3.fromRGB(22,22,22))
 })
+StrokeGradient.Parent = OutlineStrokelocal RayfieldParent = ImageButton.Parent
+
+local MainFrame = RayfieldParent:WaitForChild("Main")
+local DragFrame = RayfieldParent:WaitForChild("Drag")
+
+ImageButton.MouseButton1Click:Connect(function()
+    local NewState = not MainFrame.Visible
+
+    MainFrame.Visible = NewState
+    DragFrame.Visible = NewState
+end)
+
+local Hide = ImageButton.Parent
+    :WaitForChild("Main")
+    :WaitForChild("Topbar")
+    :WaitForChild("Hide")
+
+Hide:Destroy()
+
+local NoxiusToggleOutline = Instance.new("ImageLabel")
+NoxiusToggleOutline.Name = "NoxiusToggleOutline"
+NoxiusToggleOutline.Parent = ImageButton
+
+NoxiusToggleOutline.AnchorPoint = Vector2.new(0.34, 0.88)
+NoxiusToggleOutline.BackgroundTransparency = 1
+NoxiusToggleOutline.BorderSizePixel = 0
+NoxiusToggleOutline.Position = UDim2.new(0.34, 0, 0.88, 0)
+NoxiusToggleOutline.Size = UDim2.new(1, 0, 1, 0)
+NoxiusToggleOutline.ZIndex = 999999
+NoxiusToggleOutline.ImageTransparency = 1
+
+
+-- Rounded corners
+local OutlineCorner = Instance.new("UICorner")
+OutlineCorner.CornerRadius = UDim.new(0,17)
+OutlineCorner.Parent = NoxiusToggleOutline
+
+
+-- Gradient outline stroke
+local OutlineStroke = Instance.new("UIStroke")
+OutlineStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+OutlineStroke.Color = Color3.fromRGB(189,189,189)
+OutlineStroke.LineJoinMode = Enum.LineJoinMode.Round
+OutlineStroke.Thickness = 1
+OutlineStroke.Transparency = 0
+OutlineStroke.Parent = NoxiusToggleOutline
+
+
+local StrokeGradient = Instance.new("UIGradient")
+StrokeGradient.Rotation = 90
+StrokeGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(189,189,189)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(22,22,22))
+})
 StrokeGradient.Parent = OutlineStroke    local NewState = not MainFrame.Visible
 
     MainFrame.Visible = NewState
