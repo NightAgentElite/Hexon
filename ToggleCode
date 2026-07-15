@@ -8,6 +8,7 @@ local ImageButton = Instance.new("ImageButton")
 ImageButton.Name = "NoxiusToggleButton"
 ImageButton.Parent = Rayfield
 
+
 ImageButton.Active = true
 ImageButton.Draggable = true
 ImageButton.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -21,6 +22,7 @@ ImageButton.Size = UDim2.new(0,64,0,64)
 ImageButton.SizeConstraint = Enum.SizeConstraint.RelativeXY
 ImageButton.ZIndex = 100000
 ImageButton.Visible = true
+ImageButton.ClipsDescendants = false
 
 -- Rounded corners
 local Corner = Instance.new("UICorner")
@@ -32,12 +34,10 @@ local Gradient = Instance.new("UIGradient")
 Gradient.Rotation = 90
 Gradient.Offset = Vector2.new(0,0)
 Gradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(69,69,69)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(22,22,22))
+ColorSequenceKeypoint.new(0, Color3.fromRGB(69,69,69)),
+ColorSequenceKeypoint.new(1, Color3.fromRGB(22,22,22))
 })
 Gradient.Parent = ImageButton
-
-
 
 -- Black outer stroke
 local BlackStroke = Instance.new("UIStroke")
@@ -48,9 +48,7 @@ BlackStroke.Transparency = 0
 BlackStroke.Parent = ImageButton
 BlackStroke.Enabled = true
 
-
-
-
+ 
 
 -- UI scale
 local Scale = Instance.new("UIScale")
@@ -71,176 +69,6 @@ ImageLabel.Image = "rbxassetid://100574547642033"
 ImageLabel.ImageColor3 = Color3.fromRGB(255,255,255)
 ImageLabel.ScaleType = Enum.ScaleType.Stretch
 
-
-local RayfieldParent = ImageButton.Parent
-
-local MainFrame = RayfieldParent:WaitForChild("Main")
-local DragFrame = RayfieldParent:WaitForChild("Drag")
-
-ImageButton.MouseButton1Click:Connect(function()
-    local NewState = not MainFrame.Visible
-
-    MainFrame.Visible = NewState
-    DragFrame.Visible = NewState
-end)
-
-local Hide = ImageButton.Parent
-    :WaitForChild("Main")
-    :WaitForChild("Topbar")
-    :WaitForChild("Hide")
-
-Hide:Destroy()
-
-local NoxiusToggleOutline = Instance.new("ImageLabel")
-NoxiusToggleOutline.Name = "NoxiusToggleOutline"
-NoxiusToggleOutline.Parent = ImageButton
-
-NoxiusToggleOutline.AnchorPoint = Vector2.new(0.34, 0.88)
-NoxiusToggleOutline.BackgroundTransparency = 1
-NoxiusToggleOutline.BorderSizePixel = 0
-NoxiusToggleOutline.Position = UDim2.new(0.34, 0, 0.88, 0)
-NoxiusToggleOutline.Size = UDim2.new(1, 0, 1, 0)
-NoxiusToggleOutline.ZIndex = 999999
-NoxiusToggleOutline.ImageTransparency = 1
-
-
--- Rounded corners
-local OutlineCorner = Instance.new("UICorner")
-OutlineCorner.CornerRadius = UDim.new(0,17)
-OutlineCorner.Parent = NoxiusToggleOutline
-
-
--- Gradient outline stroke
-local OutlineStroke = Instance.new("UIStroke")
-OutlineStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
-OutlineStroke.Color = Color3.fromRGB(189,189,189)
-OutlineStroke.LineJoinMode = Enum.LineJoinMode.Round
-OutlineStroke.Thickness = 1
-OutlineStroke.Transparency = 0
-OutlineStroke.Parent = NoxiusToggleOutline
-
-
-local StrokeGradient = Instance.new("UIGradient")
-StrokeGradient.Rotation = 90
-StrokeGradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(189,189,189)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(22,22,22))
-})
-StrokeGradient.Parent = OutlineStrokelocal RayfieldParent = ImageButton.Parent
-
-local MainFrame = RayfieldParent:WaitForChild("Main")
-local DragFrame = RayfieldParent:WaitForChild("Drag")
-
-ImageButton.MouseButton1Click:Connect(function()
-    local NewState = not MainFrame.Visible
-
-    MainFrame.Visible = NewState
-    DragFrame.Visible = NewState
-end)
-
-local Hide = ImageButton.Parent
-    :WaitForChild("Main")
-    :WaitForChild("Topbar")
-    :WaitForChild("Hide")
-
-Hide:Destroy()
-
-local NoxiusToggleOutline = Instance.new("ImageLabel")
-NoxiusToggleOutline.Name = "NoxiusToggleOutline"
-NoxiusToggleOutline.Parent = ImageButton
-
-NoxiusToggleOutline.AnchorPoint = Vector2.new(0.34, 0.88)
-NoxiusToggleOutline.BackgroundTransparency = 1
-NoxiusToggleOutline.BorderSizePixel = 0
-NoxiusToggleOutline.Position = UDim2.new(0.34, 0, 0.88, 0)
-NoxiusToggleOutline.Size = UDim2.new(1, 0, 1, 0)
-NoxiusToggleOutline.ZIndex = 999999
-NoxiusToggleOutline.ImageTransparency = 1
-
-
--- Rounded corners
-local OutlineCorner = Instance.new("UICorner")
-OutlineCorner.CornerRadius = UDim.new(0,17)
-OutlineCorner.Parent = NoxiusToggleOutline
-
-
--- Gradient outline stroke
-local OutlineStroke = Instance.new("UIStroke")
-OutlineStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
-OutlineStroke.Color = Color3.fromRGB(189,189,189)
-OutlineStroke.LineJoinMode = Enum.LineJoinMode.Round
-OutlineStroke.Thickness = 1
-OutlineStroke.Transparency = 0
-OutlineStroke.Parent = NoxiusToggleOutline
-
-
-local StrokeGradient = Instance.new("UIGradient")
-StrokeGradient.Rotation = 90
-StrokeGradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(189,189,189)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(22,22,22))
-})
-StrokeGradient.Parent = OutlineStroke    local NewState = not MainFrame.Visible
-
-    MainFrame.Visible = NewState
-    DragFrame.Visible = NewState
-end)
-
-local Hide = ImageButton.Parent
-    :WaitForChild("Main")
-    :WaitForChild("Topbar")
-    :WaitForChild("Hide")
-
-Hide:Destroy()
-
-local NoxiusToggleOutline = Instance.new("ImageLabel")
-NoxiusToggleOutline.Name = "NoxiusToggleOutline"
-NoxiusToggleOutline.Parent = ImageButton
-
-NoxiusToggleOutline.AnchorPoint = Vector2.new(0.34, 0.88)
-NoxiusToggleOutline.BackgroundTransparency = 1
-NoxiusToggleOutline.BorderSizePixel = 0
-NoxiusToggleOutline.Position = UDim2.new(0.34, 0, 0.88, 0)
-NoxiusToggleOutline.Size = UDim2.new(1, 0, 1, 0)
-NoxiusToggleOutline.ZIndex = 999999
-NoxiusToggleOutline.ImageTransparency = 1
-
-
--- Rounded corners
-local OutlineCorner = Instance.new("UICorner")
-OutlineCorner.CornerRadius = UDim.new(0,17)
-OutlineCorner.Parent = NoxiusToggleOutline
-
-
--- Gradient outline stroke
-local OutlineStroke = Instance.new("UIStroke")
-OutlineStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
-OutlineStroke.Color = Color3.fromRGB(189,189,189)
-OutlineStroke.LineJoinMode = Enum.LineJoinMode.Round
-OutlineStroke.Thickness = 1
-OutlineStroke.Transparency = 0
-OutlineStroke.Parent = NoxiusToggleOutline
-
-
-local StrokeGradient = Instance.new("UIGradient")
-StrokeGradient.Rotation = 90
-StrokeGradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(189,189,189)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(22,22,22))
-})
-StrokeGradient.Parent = OutlineStrokeImageLabel.Name = "ImageLabel"
-ImageLabel.Parent = ImageButton
-
-ImageLabel.Active = false
-ImageLabel.BackgroundTransparency = 1
-ImageLabel.Position = UDim2.new(0,-14,0,-14)
-ImageLabel.Size = UDim2.new(0,92,0,92)
-ImageLabel.ZIndex = 100001
-ImageLabel.Image = "rbxassetid://100574547642033"
-ImageLabel.ImageColor3 = Color3.fromRGB(255,255,255)
-ImageLabel.ScaleType = Enum.ScaleType.Stretch
-
-
 local MainFrame = ImageButton.Parent
     :WaitForChild("Main")
 
@@ -254,3 +82,37 @@ local Hide = ImageButton.Parent
     :WaitForChild("Hide")
 
 Hide:Destroy()
+
+local NoxiusToggleOutline = Instance.new("ImageLabel")
+NoxiusToggleOutline.Name = "NoxiusToggleOutline"
+NoxiusToggleOutline.Parent = ImageButton
+
+NoxiusToggleOutline.AnchorPoint = Vector2.new(0.34, 0.88)
+NoxiusToggleOutline.BackgroundTransparency = 1
+NoxiusToggleOutline.BackgroundColor3 = Color3.fromRGB(255,255,255)
+NoxiusToggleOutline.BorderSizePixel = 0
+NoxiusToggleOutline.Position = UDim2.new(0.34, 0, 0.88, 0)
+NoxiusToggleOutline.Size = UDim2.new(1, 0, 1, 0)
+NoxiusToggleOutline.ZIndex = 100001
+NoxiusToggleOutline.ImageTransparency = 1
+NoxiusToggleOutline.ClipsDescendants = false
+
+local OutlineCorner = Instance.new("UICorner")
+OutlineCorner.CornerRadius = UDim.new(0,17)
+OutlineCorner.Parent = NoxiusToggleOutline
+
+local OutlineStroke = Instance.new("UIStroke")
+OutlineStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+OutlineStroke.Color = Color3.fromRGB(189,189,189)
+OutlineStroke.LineJoinMode = Enum.LineJoinMode.Round
+OutlineStroke.Thickness = 1
+OutlineStroke.Transparency = 0
+OutlineStroke.Parent = NoxiusToggleOutline
+
+local StrokeGradient = Instance.new("UIGradient")
+StrokeGradient.Rotation = 90
+StrokeGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(189,189,189)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(22,22,22))
+})
+StrokeGradient.Parent = OutlineStroke
