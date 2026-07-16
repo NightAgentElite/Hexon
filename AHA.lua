@@ -2,27 +2,32 @@ local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
 local DKey = loadstring(game:HttpGet("https://raw.githubusercontent.com/36kshania-jpg/ahahexon.lua/refs/heads/main/DKey.lua"))()
 
+local FunFacts = loadstring(game:HttpGet("https://raw.githubusercontent.com/NightAgentElite/Noxius/refs/heads/main/FunFacts.lua"))()
+
+local RandomFact = FunFacts[math.random(1, #FunFacts)]
+
 local Window = Rayfield:CreateWindow({
-Name = "Hexon",
-ShowText = "Hexon",
+Name = "Noxius",
+Icon = 100574547642033,
+ShowText = "Bug",
 
-LoadingTitle = "Initializing Hexon...",  
-LoadingSubtitle = "Tip: Patience is always the key...",  
+LoadingTitle = "Downloading and Preloading assets...",  
+LoadingSubtitle = "Loading and Constructing UI..",  
 
-Theme = "Green",  
+Theme = "Darker",  
 
 ConfigurationSaving = {  
     Enabled = false,  
-    FolderName = "Hexon AHA",  
-    FileName = "Helixified File"  
+    FolderName = "Noxius AHA",  
+    FileName = "AutomaticSave"  
 },  
 
 KeySystem = true,
 
 KeySettings = {
-Title = "Hexon Authentication...",
-Subtitle = "Verifying Core Access..",
-Note = "Enter Your Core Access Key To Continue Further Ado.",
+Title = "Noxius's Daily Key System",
+Subtitle = "Enter your key, Obtained from something.",
+Note = "Fun Fact: "..RandomFact,
 
 FileName = "???",  
 SaveKey = false,  
@@ -35,22 +40,29 @@ Key = {
 
 }
 })
---  ✨ Main Tab
-local Main = Window:CreateTab("Main", "Leaf")
 
-local WelcomeTitles = {
-"Welcome!",
-"Salute!",
-"Hello!",
-"Gotcha!",
-"Ooh!"
-}
+loadstring(game:HttpGet("https://raw.githubusercontent.com/NightAgentElite/Noxius/refs/heads/main/CustomizationCode.lua"))()
+
+--  🏡 Main  Tab
+local Main = Window:CreateTab("Main", "Home")
+-- 🕳️ Navigation Tab
+local Navigation = Window:CreateTab("Navigation", "Navigation")
+-- 👁 Visuals Tab
+local Visuals = Window:CreateTab("Visuals", "Eye")
+-- 👤 Local Player Tab
+local LocalPlayer = Window:CreateTab("Local Player", "User")
+-- ▶️ Automation Tab
+local Automation = Window:CreateTab("Automation", "Play")
+-- 🙂 Fun Tab
+local Fun = Window:CreateTab("Fun", "Smile")
+
+local WelcomeTitles = loadstring(game:HttpGet("https://raw.githubusercontent.com/NightAgentElite/Noxius/refs/heads/main/WelcomeTexts.lua"))()
 
 local RandomWelcomeTitle = WelcomeTitles[math.random(1, #WelcomeTitles)]
 
 Main:CreateParagraph({
 Title = RandomWelcomeTitle,
-Content = "Hello there, "..game.Players.LocalPlayer.Name.."! 🍃\n\nWelcome to Hexon, a nature-inspired control system built around precision, automation, and powerful utilities. ✨\n\nExplore intelligent toggles and advanced systems designed to bring control and efficiency together through a sleek organic interface. 🌿"
+Content = "Hello there, "..game.Players.LocalPlayer.DisplayName.."! 💌\n\nWelcome to Noxius, a refined control system inspired by Noxious, built around simplicity, organization, and reliable utilities. ✨\n\nDiscover powerful tools and customizable features designed to keep everything accessible through a clean and balanced interface. 🔰"
 })
 
 local Player = game.Players.LocalPlayer
@@ -144,8 +156,7 @@ end
 
 end)
 
--- 🤖 Automation Tab
-local Automation = Window:CreateTab("Automation", "Cog")
+
 
 Automation:CreateSection("------------------------------------------ Cameras Section.")
 
@@ -214,7 +225,7 @@ end)
 end
 
 Automation:CreateToggle({
-Name = "Auto Camera Fix",
+Name = "Auto Fix Cameras",
 CurrentValue = false,
 Callback = function(Value)
 CameraFixEnabled = Value
@@ -630,6 +641,8 @@ end
 
 local function HandlePatientFire(npc)
 
+    task.wait(1) -- wait before starting for editing
+
     if HandlingPatientFire then return end
 
     HandlingPatientFire = true
@@ -646,23 +659,23 @@ local function HandlePatientFire(npc)
 
     -- Get ointment
     root.CFrame = OintmentCFrame
-    task.wait(0.1)
+    task.wait(0.25)
 
     local ointmentPP = GetNearestPrompt(10)
 
     SafeFirePrompt(ointmentPP)
 
-    task.wait()
+    task.wait(0.25)
 
     -- Return to patient
     root.CFrame = npcRoot.CFrame
-    task.wait(0.1)
+    task.wait(0.25)
 
     SafeFirePrompt(firePP)
 
     OintmentedPatients[npc] = true
 
-    task.wait(0.1)
+    task.wait(0.25)
 
     HandlingPatientFire = false
 end
@@ -692,7 +705,7 @@ local function ScanPatientFires()
                 end
             end
 
-            task.wait(0.1)
+            task.wait(0.25)
         end
 
         PatientFireRunning = false
@@ -716,9 +729,231 @@ end
 
 })
 
--- 🔧 Utilities Tab
-local Utilities = Window:CreateTab("Utilities", "Wrench")
--- 👁 Visuals Tab
-local Visuals = Window:CreateTab("Visuals", "scan-eye")
--- 😗 Player Tab
-local Player = Window:CreateTab("Player", "Accessibility")
+
+
+Automation:CreateSection("------------------------------------------ Trash Section.")
+
+
+local AutoTrashFaintedPatients = false
+local TrashRunning = false
+
+local TrashFaintedsDelay = 0.15 -- value for slider setting
+
+
+local TrashTP = CFrame.new(
+    -137.000916, 3.45753121, -70.3865509,
+    0.0145357512, -3.07224113e-08, -0.999894321,
+    -4.26894875e-09, 1, -3.07877173e-08,
+    0.999894321, 4.71602046e-09, 0.0145357512
+)
+
+local TrashPivotPosition = Vector3.new(
+    -134.350006,
+    2.19999957,
+    -70.399971
+)
+
+
+local function FirePrompt(prompt)
+
+    if prompt
+    and prompt:IsA("ProximityPrompt")
+    and fireproximityprompt then
+
+        fireproximityprompt(prompt)
+
+    end
+
+end
+
+
+local function FireFaintedPP(npc)
+
+    local rootPart = npc:FindFirstChild("RootPart")
+
+    if not rootPart then
+        return
+    end
+
+
+    local faintedPP = rootPart:FindFirstChild("FaintedPP", true)
+
+    if faintedPP then
+        FirePrompt(faintedPP)
+    end
+
+end
+
+
+local function GetCorrectTrash()
+
+    local closestTrash
+    local closestDistance = math.huge
+
+
+    for _, obj in ipairs(workspace:GetDescendants()) do
+
+        if obj:IsA("Model")
+        and obj.Name == "Trash" then
+
+
+            local distance =
+                (obj:GetPivot().Position - TrashPivotPosition).Magnitude
+
+
+            if distance < closestDistance then
+
+                closestDistance = distance
+                closestTrash = obj
+
+            end
+
+        end
+
+    end
+
+
+    return closestTrash
+
+end
+
+
+local function FireTrashPP()
+
+    local trash = GetCorrectTrash()
+
+    if not trash then
+        return
+    end
+
+
+    local pp = trash:FindFirstChild("PP")
+
+
+    if pp then
+        FirePrompt(pp)
+    end
+
+end
+
+
+local function HandleFaintedPatient(npc)
+
+    local character = game.Players.LocalPlayer.Character
+
+    if not character then
+        return
+    end
+
+
+    local root = character:FindFirstChild("HumanoidRootPart")
+    local npcRoot = npc:FindFirstChild("HumanoidRootPart")
+
+
+    if not root or not npcRoot then
+        return
+    end
+
+
+    -- Teleport to patient
+    root.CFrame = npcRoot.CFrame
+    task.wait(TrashFaintedsDelay)
+
+
+    -- Fire patient fainted prompt
+    FireFaintedPP(npc)
+    task.wait(TrashFaintedsDelay)
+
+
+    -- Teleport to trash
+    root.CFrame = TrashTP
+    task.wait(TrashFaintedsDelay)
+
+
+    -- Fire trash prompt
+    FireTrashPP()
+    task.wait(TrashFaintedsDelay)
+
+end
+
+
+local function ScanFaintedPatients()
+
+    if TrashRunning then
+        return
+    end
+
+
+    TrashRunning = true
+
+
+    task.spawn(function()
+
+        while AutoTrashFaintedPatients do
+
+
+            local npcFolder = workspace:FindFirstChild("NPCs")
+
+
+            if npcFolder then
+
+                for _, npc in ipairs(npcFolder:GetChildren()) do
+
+
+                    if npc:IsA("Model")
+                    and npc:FindFirstChild("PatientHighlight")
+                    and npc:FindFirstChild("RagdollScript") then
+
+
+                        HandleFaintedPatient(npc)
+
+                        task.wait(TrashFaintedsDelay)
+
+                    end
+
+                end
+
+            end
+
+
+            task.wait(TrashFaintedsDelay)
+
+        end
+
+
+        TrashRunning = false
+
+    end)
+
+end
+
+
+Automation:CreateToggle({
+    Name = "Auto Trash Fainted Patients",
+    CurrentValue = false,
+
+    Callback = function(Value)
+
+        AutoTrashFaintedPatients = Value
+
+
+        if Value then
+
+            ScanFaintedPatients()
+
+        end
+
+    end
+})
+
+Automation:CreateSlider({
+    Name = "Auto Trash Fainted Patients Delay",
+    Range = {0.15, 10},
+    Increment = 0.05,
+    Suffix = " Seconds",
+    CurrentValue = 0.25,
+
+    Callback = function(Value)
+        TrashFaintedsDelay = Value
+    end
+})
