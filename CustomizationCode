@@ -140,7 +140,7 @@ StrokeGradient.Parent = OutlineStroke
 
 -- Hover Sound
 local HoverSound = Instance.new("Sound")
-HoverSound.Name = "Hover"
+HoverSound.Name = "TinyTick"
 HoverSound.Parent = Rayfield
 
 -- Data
@@ -160,7 +160,7 @@ HoverSound.Looped = false
 HoverSound.PlaybackRegionsEnabled = false
 HoverSound.PlaybackSpeed = 2
 HoverSound.TimePosition = 0.1
-HoverSound.Volume = 1
+HoverSound.Volume = 0.150
 
 -- Regions
 HoverSound.LoopRegion = NumberRange.new(0, 60000)
@@ -197,7 +197,7 @@ ClickSound.Looped = false
 ClickSound.PlaybackRegionsEnabled = false
 ClickSound.PlaybackSpeed = 1
 ClickSound.TimePosition = 0
-ClickSound.Volume = 1
+ClickSound.Volume = 0.5
 
 -- Regions
 ClickSound.LoopRegion = NumberRange.new(0, 60000)
@@ -213,10 +213,30 @@ ClickSound.SoundGroup = nil
 
 
 -- Events
-ImageButton.MouseEnter:Connect(function()
-    HoverSound:Play()
-end)
+local function ConnectButton(Button)
+	if Button:GetAttribute("NoxiusConnected") then
+		return
+	end
 
-ImageButton.MouseButton1Click:Connect(function()
-    ClickSound:Play()
+	Button:SetAttribute("NoxiusConnected", true)
+
+	Button.MouseEnter:Connect(function()
+		HoverSound:Play()
+	end)
+
+	Button.MouseButton1Click:Connect(function()
+		ClickSound:Play()
+	end)
+end
+
+for _, Object in ipairs(Rayfield:GetDescendants()) do
+	if Object:IsA("ImageButton") or Object:IsA("TextButton") then
+		ConnectButton(Object)
+	end
+end
+
+Rayfield.DescendantAdded:Connect(function(Object)
+	if Object:IsA("ImageButton") or Object:IsA("TextButton") then
+		ConnectButton(Object)
+	end
 end)
