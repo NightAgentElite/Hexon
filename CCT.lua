@@ -7,8 +7,8 @@ Name = "Noxius",
 Icon = 100574547642033,
 ShowText = "Bug",
 
-LoadingTitle = "Checking and downloading assets...",
-LoadingSubtitle = "Trying to preload assets..",
+LoadingTitle = "Downloading and Preloading assets",
+LoadingSubtitle = "Loading and Constructing UI..",
 
 Theme = "Darker",
 
@@ -37,18 +37,18 @@ DKey
 }
 })
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/NightAgentElite/Noxius/refs/heads/main/ToggleCode"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/NightAgentElite/Noxius/refs/heads/main/CustomizationCode.lua"))()
 
 -- ✨ Main Tab
 local Main = Window:CreateTab("Main", "Home")
 
-local WelcomeTitles = loadstring(game:HttpGet("https://raw.githubusercontent.com/NightAgentElite/Noxius/refs/heads/main/WelcomeTexts"))()
+local WelcomeTitles = loadstring(game:HttpGet("https://raw.githubusercontent.com/NightAgentElite/Noxius/refs/heads/main/WelcomeTexts.lua"))()
 
 local RandomWelcomeTitle = WelcomeTitles[math.random(1, #WelcomeTitles)]
 
 Main:CreateParagraph({
 Title = RandomWelcomeTitle,
-Content = "Hello there, "..game.Players.LocalPlayer.Name.."! 💌\n\nWelcome to Noxius, a refined control system inspired by Noxious, built around simplicity, organization, and reliable utilities. ✨\n\nDiscover powerful tools and customizable features designed to keep everything accessible through a clean and balanced interface. 🔰"
+Content = "Hello there, "..game.Players.LocalPlayer.DisplayName.."! 💌\n\nWelcome to Noxius, a refined control system inspired by Noxious, built around simplicity, organization, and reliable utilities. ✨\n\nDiscover powerful tools and customizable features designed to keep everything accessible through a clean and balanced interface. 🔰"
 })
 
 local Player = game.Players.LocalPlayer
@@ -143,7 +143,7 @@ end
 end)
 
 -- 👁️ Visuals Tab
-local Visuals = Window:CreateTab("Visuals", "scan-eye")
+local Visuals = Window:CreateTab("Visuals", "Eye")
 
 Visuals:CreateSection("------------------------------------------ Dangerous Section.")
 
