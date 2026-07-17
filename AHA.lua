@@ -56,109 +56,136 @@ local Automation = Window:CreateTab("Automation", "Play")
 -- 🙂 Fun Tab
 local Fun = Window:CreateTab("Fun", "Smile")
 
-local WelcomeTitles = loadstring(game:HttpGet("https://raw.githubusercontent.com/NightAgentElite/Noxius/refs/heads/main/WelcomeTexts.lua"))()
 
-local RandomWelcomeTitle = WelcomeTitles[math.random(1, #WelcomeTitles)]
+Main:CreateSection(" Interface")
 
-Main:CreateParagraph({
-Title = RandomWelcomeTitle,
-Content = "Hello there, "..game.Players.LocalPlayer.DisplayName.."! 💌\n\nWelcome to Noxius, a refined control system inspired by Noxious, built around simplicity, organization, and reliable utilities. ✨\n\nDiscover powerful tools and customizable features designed to keep everything accessible through a clean and balanced interface. 🔰"
-})
+local CoreGui = game:GetService("CoreGui")
 
-local Player = game.Players.LocalPlayer
+local RayfieldGUI
 
-local SessionStart = tick()
+for _, obj in ipairs(CoreGui:GetDescendants()) do
+    if obj.Name == "Rayfield" and obj:IsA("ScreenGui") then
+        RayfieldGUI = obj
+        break
+    end
+end
 
-local function FormatTime(seconds)
-seconds = math.floor(seconds)
+if not RayfieldGUI then
+    error("Rayfield GUI not found in CoreGui")
+end
 
-local years = math.floor(seconds / (365 * 86400))  
-seconds = seconds % (365 * 86400)  
+local LockToggleEnabled = false
 
-local months = math.floor(seconds / (30 * 86400))  
-seconds = seconds % (30 * 86400)  
+local function UpdateImageButton(Button)
 
-local weeks = math.floor(seconds / (7 * 86400))  
-seconds = seconds % (7 * 86400)  
-
-local days = math.floor(seconds / 86400)  
-seconds = seconds % 86400  
-
-local hours = math.floor(seconds / 3600)  
-seconds = seconds % 3600  
-
-local minutes = math.floor(seconds / 60)  
-local secs = seconds % 60  
-
-local result = {}  
-
-if years > 0 then  
-    table.insert(result, string.format("%02d Years", years))  
-end  
-
-if months > 0 then  
-    table.insert(result, string.format("%02d Months", months))  
-end  
-
-if weeks > 0 then  
-    table.insert(result, string.format("%d Weeks", weeks))  
-end  
-
-if days > 0 then  
-    table.insert(result, string.format("%03d Days", days))  
-end  
-
-if hours > 0 then  
-    table.insert(result, string.format("%02d Hours", hours))  
-end  
-
-if minutes > 0 then  
-    table.insert(result, string.format("%02d Minutes", minutes))  
-end  
-
-table.insert(result, string.format("%02d Seconds.", secs))  
-
-return table.concat(result, "\n")
+    if Button:IsA("ImageButton") then
+        Button.Draggable = not LockToggleEnabled
+    end
 
 end
 
-local PanelStatus = "Fine."
 
-local VersionStatus = "Testing."
+local function UpdateAllImageButtons()
 
-local Version = "v0.0.1"
+    for _, Button in ipairs(RayfieldGUI:GetChildren()) do
+        UpdateImageButton(Button)
+    end
 
-local SessionInfo = Main:CreateParagraph({
-Title = "Session Info",
-Content =
-
-"----------Version:\n"..Version..  
-     "\n\n----------Version Status:\n"..VersionStatus..  
-    "\n\n----------Panel Status:\n"..PanelStatus..  
-    "\n\n----------Server Uptime:\n"..FormatTime(workspace.DistributedGameTime)..  
-    "\n\n----------Runtime:\n"..FormatTime(tick() - SessionStart)
-
-})
-
-task.spawn(function()
-while task.wait(1) do
-SessionInfo:Set({
-Title = "Session Info",
-Content =
-
-"----------Version:\n"..Version..  
-            "\n\n----------Version Status:\n"..VersionStatus..  
-            "\n\n----------Panel Status:\n"..PanelStatus..  
-            "\n\n----------Server Uptime:\n"..FormatTime(workspace.DistributedGameTime)..  
-            "\n\n----------Runtime:\n"..FormatTime(tick() - SessionStart)  
-    })  
 end
+
+
+RayfieldGUI.ChildAdded:Connect(function(Child)
+
+    task.wait()
+
+    if Child:IsA("ImageButton") then
+        UpdateImageButton(Child)
+    end
 
 end)
 
+Main:CreateToggle({
+    Name = "Lock Toggle Button",
+    CurrentValue = false,
+
+    Callback = function(Value)
+
+        LockToggleEnabled = Value
+
+        UpdateAllImageButtons()
+
+    end
+})
+
+local DestroyConfirm = false
+
+Main:CreateButton({
+    Name = "Destroy Interface",
+
+    Callback = function()
+
+        if not DestroyConfirm then
+
+            DestroyConfirm = true
+
+            Rayfield:Notify({
+                Title = "Destroy Interface?",
+                Content = "Are you sure you want to DESTROY the interface?\nClick again within 5 seconds to confirm.",
+                Image = 100574547642033,
+                Duration = 5
+            })
+
+            task.delay(5, function()
+                DestroyConfirm = false
+            end)
+
+            return
+        end
 
 
-Automation:CreateSection("------------------------------------------ Cameras Section.")
+        if RayfieldGUI then
+            RayfieldGUI:Destroy()
+        end
+
+    end
+})
+
+if not RayfieldGUI then
+    error("Rayfield GUI not found in CoreGui")
+end
+
+Main:CreateSection(" Developer")
+
+local Version = "v0.0.1"
+
+Main:CreateButton({
+    Name = "Notify Version",
+
+    Callback = function()
+
+        Rayfield:Notify({
+            Title = "Noxius Version",
+            Content = "Current Version: "..Version,
+            Image = 100574547642033,
+            Duration = 5
+        })
+
+    end
+})
+
+Main:CreateButton({
+    Name = "Show Console",
+
+    Callback = function()
+
+        game:GetService("StarterGui"):SetCore("DevConsoleVisible", true)
+
+    end
+})
+
+
+
+Automation:CreateSection(" Player")
 
 local CameraFixEnabled = false
 local CameraConnections = {}
@@ -253,7 +280,6 @@ end
 
 })
 
-Automation:CreateSection("------------------------------------------ Check-In Section.")
 
 -- 🏥 Auto Check-In
 local AutoCheckInEnabled = false
@@ -463,7 +489,6 @@ end
 
 })
 
-Automation:CreateSection("------------------------------------------ Fire Section.")
 
 local AutoPutOutFire = false
 
@@ -731,7 +756,6 @@ end
 
 
 
-Automation:CreateSection("------------------------------------------ Trash Section.")
 
 
 local AutoTrashFaintedPatients = false
@@ -957,3 +981,442 @@ Automation:CreateSlider({
         TrashFaintedsDelay = Value
     end
 })
+
+Navigation:CreateSection(" Teleports")
+
+Navigation:CreateButton({
+    Name = "Teleport to Office",
+    Callback = function()
+        local Character = game.Players.LocalPlayer.Character
+        if Character and Character:FindFirstChild("HumanoidRootPart") then
+            Character.HumanoidRootPart.CFrame = CFrame.new(
+                -106.709076, 3.41253114, 6.77596378,
+                0.999785542, -3.1757974e-08, 0.0207103845,
+                3.02453671e-08, 1, 7.33493621e-08,
+                -0.0207103845, -7.27072376e-08, 0.999785542
+            )
+        end
+    end
+})
+
+Navigation:CreateButton({
+    Name = "Teleport to Medical",
+    Callback = function()
+        local Character = game.Players.LocalPlayer.Character
+        if Character and Character:FindFirstChild("HumanoidRootPart") then
+            Character.HumanoidRootPart.CFrame = CFrame.new(
+                -144.882294, 3.45753074, -69.8499908,
+                0.99998498, 9.19015477e-08, -0.00548297819,
+                -9.15779381e-08, 1, 5.92714642e-08,
+                0.00548297819, -5.87684532e-08, 0.99998498
+            )
+        end
+    end
+})
+
+Navigation:CreateButton({
+    Name = "Teleport to Emergency",
+    Callback = function()
+        local Character = game.Players.LocalPlayer.Character
+        if Character and Character:FindFirstChild("HumanoidRootPart") then
+            Character.HumanoidRootPart.CFrame = CFrame.new(
+                -145.219116, 3.45753026, 39.4612732,
+                -0.999900162, 8.14113505e-08, 0.0141292699,
+                8.25948234e-08, 1, 8.31767863e-08,
+                -0.0141292699, 8.43354897e-08, -0.999900162
+            )
+        end
+    end
+})
+
+Navigation:CreateToggle({
+    Name = "Teleport Tool",
+    CurrentValue = false,
+
+    Callback = function(Value)
+
+        if Value then
+
+            -- tp
+
+            mouse = game.Players.LocalPlayer:GetMouse()
+            tool = Instance.new("Tool")
+            tool.RequiresHandle = false
+            tool.Name = "Teleport Tool"
+
+            tool.Activated:connect(function()
+                local pos = mouse.Hit + Vector3.new(0,2.5,0)
+                pos = CFrame.new(pos.X,pos.Y,pos.Z)
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+            end)
+
+            tool.Parent = game.Players.LocalPlayer.Backpack
+
+        else
+
+            local Tool = game.Players.LocalPlayer.Backpack:FindFirstChild("Teleport Tool")
+
+            if Tool then
+                Tool:Destroy()
+            end
+
+            local EquippedTool = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Teleport Tool")
+
+            if EquippedTool then
+                EquippedTool:Destroy()
+            end
+
+        end
+
+    end
+})
+
+Navigation:CreateInput({
+    Name = "Teleport To Player",
+    CurrentValue = "",
+    PlaceholderText = "> Target",
+    RemoveTextAfterFocusLost = true,
+
+    Callback = function(Text)
+
+        local Search = Text:lower()
+        local Target = nil
+
+        for _, Player in ipairs(game.Players:GetPlayers()) do
+            if Player.Name:lower():sub(1, #Search) == Search then
+                Target = Player
+                break
+            end
+        end
+
+        if Target 
+        and Target.Character 
+        and Target.Character:FindFirstChild("HumanoidRootPart") then
+            
+            local LocalCharacter = game.Players.LocalPlayer.Character
+
+            if LocalCharacter 
+            and LocalCharacter:FindFirstChild("HumanoidRootPart") then
+                
+                LocalCharacter.HumanoidRootPart.CFrame =
+                    Target.Character.HumanoidRootPart.CFrame
+            end
+        end
+    end
+})
+
+Fun:CreateSection("  Character")
+
+local FlipToolsEnabled = false
+
+local plr = game.Players.LocalPlayer
+
+
+local function performflip(character, flipdirection)
+
+    local hum = character:WaitForChild("Humanoid")
+    local rootpart = character:WaitForChild("HumanoidRootPart")
+
+    hum:ChangeState(Enum.HumanoidStateType.Jumping)
+    hum.Sit = true
+
+    local lookvector = rootpart.CFrame.LookVector
+    local spindirection = Vector3.new(-lookvector.Z, 0, lookvector.X)
+
+    local torso = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
+
+    if torso then
+
+        local bodyvelocity = Instance.new("BodyAngularVelocity")
+        bodyvelocity.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+        bodyvelocity.AngularVelocity = spindirection * (flipdirection * 10)
+        bodyvelocity.P = 1000
+        bodyvelocity.Parent = torso
+
+        task.wait(0.4)
+
+        bodyvelocity:Destroy()
+
+    end
+
+    task.wait(0.2)
+
+    hum.Sit = false
+
+end
+
+
+
+local function connecttoolevents(tool)
+
+    if tool:IsA("Tool") then
+
+        tool.RequiresHandle = false
+
+        tool.Activated:Connect(function()
+
+            local char = plr.Character
+
+            if char then
+
+                if tool.Name == "Frontflip" then
+                    performflip(char, -1)
+
+                elseif tool.Name == "Backflip" then
+                    performflip(char, 1)
+
+                end
+
+            end
+
+        end)
+
+    end
+
+end
+
+
+
+local function givetools()
+
+    local backpack = plr:FindFirstChild("Backpack")
+
+    if not backpack then return end
+
+
+    if not backpack:FindFirstChild("Frontflip") then
+
+        local frontfliptool = Instance.new("Tool")
+        frontfliptool.Name = "Frontflip"
+        frontfliptool.RequiresHandle = false
+        frontfliptool.Parent = backpack
+
+        connecttoolevents(frontfliptool)
+
+    end
+
+
+    if not backpack:FindFirstChild("Backflip") then
+
+        local backfliptool = Instance.new("Tool")
+        backfliptool.Name = "Backflip"
+        backfliptool.RequiresHandle = false
+        backfliptool.Parent = backpack
+
+        connecttoolevents(backfliptool)
+
+    end
+
+end
+
+
+
+local function RemoveFlipTools()
+
+    local containers = {
+        plr:FindFirstChild("Backpack"),
+        plr.Character
+    }
+
+
+    for _, container in ipairs(containers) do
+
+        if container then
+
+            for _, tool in ipairs(container:GetChildren()) do
+
+                if tool:IsA("Tool")
+                and (tool.Name == "Frontflip" or tool.Name == "Backflip") then
+
+                    tool:Destroy()
+
+                end
+
+            end
+
+        end
+
+    end
+
+end
+
+
+
+plr.CharacterAdded:Connect(function()
+
+    task.wait(1)
+
+    if FlipToolsEnabled then
+
+        givetools()
+
+    end
+
+end)
+
+
+
+Fun:CreateToggle({
+    Name = "Flip Tools",
+    CurrentValue = false,
+
+    Callback = function(Value)
+
+        FlipToolsEnabled = Value
+
+        if Value then
+
+            givetools()
+
+        else
+
+            RemoveFlipTools()
+
+        end
+
+    end
+})
+
+local SpinEnabled = false
+local SpinSpeed = 10
+local SpinObject = nil
+
+local function StartSpin()
+
+    local character = plr.Character
+    if not character then return end
+
+    local root = character:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+
+    if SpinObject then
+        SpinObject:Destroy()
+    end
+
+    local spin = Instance.new("BodyAngularVelocity")
+    spin.Name = "NoxiusSpin"
+    spin.MaxTorque = Vector3.new(0, math.huge, 0)
+    spin.AngularVelocity = Vector3.new(0, SpinSpeed, 0)
+    spin.P = 1000
+    spin.Parent = root
+
+    SpinObject = spin
+
+end
+
+
+local function StopSpin()
+
+    if SpinObject then
+        SpinObject:Destroy()
+        SpinObject = nil
+    end
+
+end
+
+
+Fun:CreateToggle({
+    Name = "Spin",
+    CurrentValue = false,
+
+    Callback = function(Value)
+
+        SpinEnabled = Value
+
+        if Value then
+            StartSpin()
+        else
+            StopSpin()
+        end
+
+    end
+})
+
+
+Fun:CreateSlider({
+    Name = "Spin Speed",
+    Range = {1, 20},
+    Increment = 1,
+    Suffix = "",
+    CurrentValue = 10,
+
+    Callback = function(Value)
+
+        SpinSpeed = Value
+
+        if SpinObject then
+            SpinObject.AngularVelocity = Vector3.new(0, SpinSpeed, 0)
+        end
+
+    end
+})
+
+Visuals:CreateSection(" ESPs")
+
+local Players = game:GetService("Players")
+local PlayerESPEnabled = false
+local PlayerHighlights = {}
+
+local function AddPlayerHighlight(Character)
+    if not Character then return end
+    if PlayerHighlights[Character] then return end
+
+    local Highlight = Instance.new("Highlight")
+    Highlight.Name = "Highlight"
+    Highlight.FillColor = Color3.fromRGB(0, 0, 255)
+    Highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+    Highlight.Adornee = Character
+    Highlight.Parent = Character
+
+    PlayerHighlights[Character] = Highlight
+end
+
+local function RemovePlayerHighlights()
+    for _, Highlight in pairs(PlayerHighlights) do
+        if Highlight then
+            Highlight:Destroy()
+        end
+    end
+
+    table.clear(PlayerHighlights)
+end
+
+local function SetupPlayer(Player)
+    Player.CharacterAdded:Connect(function(Character)
+        if PlayerESPEnabled and Player ~= Players.LocalPlayer then
+            task.wait(1)
+            AddPlayerHighlight(Character)
+        end
+    end)
+end
+
+local function ScanPlayers()
+    for _, Player in ipairs(Players:GetPlayers()) do
+        if Player ~= Players.LocalPlayer and Player.Character then
+            AddPlayerHighlight(Player.Character)
+        end
+    end
+end
+
+for _, Player in ipairs(Players:GetPlayers()) do
+    SetupPlayer(Player)
+end
+
+Players.PlayerAdded:Connect(SetupPlayer)
+
+Visuals:CreateToggle({
+    Name = "Player ESP",
+    CurrentValue = false,
+
+    Callback = function(Value)
+        PlayerESPEnabled = Value
+
+        if Value then
+            ScanPlayers()
+        else
+            RemovePlayerHighlights()
+        end
+    end
+})
+
+Visuals:CreateLabel("Toggles ESP for Players.")
