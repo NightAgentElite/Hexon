@@ -16,6 +16,150 @@ if not Rayfield then
 error("Rayfield not found in CoreGui")
 end
 
+local RayfieldGUIButtons
+
+for _, obj in ipairs(game:GetService("CoreGui"):GetDescendants()) do
+    if obj.Name == "Rayfield" and obj:IsA("ScreenGui") then
+        RayfieldGUIButtons = obj
+        break
+    end
+end
+
+
+if not RayfieldGUIButtons then
+    error("Rayfield GUI not found")
+end
+
+
+local function IsExcluded(Object)
+
+    return Object.Name == "SectionSpacing"
+    or Object.Name == "SectionTitle"
+    or Object.Name == "Divider"
+
+end
+
+
+local function CreateStrokeOverlay(Button)
+
+    if IsExcluded(Button) then
+        return
+    end
+
+
+    if not Button:IsA("GuiObject") then
+        return
+    end
+
+
+    -- Remove rayfield's default stroke
+    local OldStroke = Button:FindFirstChild("UIStroke")
+
+    if OldStroke then
+        OldStroke:Destroy()
+    end
+
+
+    if Button:FindFirstChild("Overlay") then
+        return
+    end
+
+
+    local Overlay = Button:Clone()
+
+    Overlay.Name = "Overlay"
+    Overlay.Size = UDim2.new(
+    Button.Size.X.Scale,
+    0,
+    Button.Size.Y.Scale,
+    Button.Size.Y.Offset
+)
+    Overlay.BackgroundTransparency = 1
+    Overlay.BackgroundColor3 = Color3.fromRGB(255,255,255)
+
+    -- Remove everything inside clone
+    for _, child in ipairs(Overlay:GetDescendants()) do
+
+        if child ~= Overlay then
+            child:Destroy()
+        end
+
+    end
+
+
+    Overlay.Parent = Button
+
+
+    Overlay.Active = false
+    Overlay.Selectable = false
+
+local Outline = Instance.new("UIStroke")
+Outline.Name = "UIStroke"
+Outline.Color = Color3.fromRGB(0,0,0)
+Outline.Thickness = 3
+Outline.LineJoinMode = Enum.LineJoinMode.Round
+Outline.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+Outline.Parent = Button
+
+
+    local Corner = Instance.new("UICorner")
+    Corner.CornerRadius = UDim.new(0,9)
+    Corner.Parent = Overlay
+
+
+    local Stroke = Instance.new("UIStroke")
+    Stroke.Name = "UIStroke"
+    Stroke.Color = Color3.fromRGB(189,189,189)
+    Stroke.Thickness = 1
+    Stroke.LineJoinMode = Enum.LineJoinMode.Round
+    Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+    Stroke.Parent = Overlay
+
+
+    local Gradient = Instance.new("UIGradient")
+    Gradient.Name = "UIGradient"
+    Gradient.Rotation = 90
+    Gradient.Transparency = NumberSequence.new(0)
+    Gradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(189,189,189)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(22,22,22))
+    })
+    Gradient.Parent = Stroke
+
+end
+
+
+local Elements = RayfieldGUIButtons.Main.Elements
+
+
+local function Scan()
+
+    for _, Object in ipairs(Elements:GetDescendants()) do
+
+        if Object:IsA("ScrollingFrame") then
+
+            for _, Child in ipairs(Object:GetChildren()) do
+                CreateStrokeOverlay(Child)
+            end
+
+
+            Object.ChildAdded:Connect(function(Child)
+
+                task.wait()
+
+                CreateStrokeOverlay(Child)
+
+            end)
+
+        end
+
+    end
+
+end
+
+
+Scan()
+
 -- Tab Customization System
 
 local TabGradients = {
