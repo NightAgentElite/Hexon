@@ -14,7 +14,7 @@ ShowText = "Bug",
 LoadingTitle = "Downloading and Preloading assets...",  
 LoadingSubtitle = "Loading and Constructing UI..",  
 
-Theme = "Darker",  
+Theme = "Ocean",  
 
 ConfigurationSaving = { 
     Enabled = true, 
