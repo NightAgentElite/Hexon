@@ -8,7 +8,7 @@ local RandomFact = FunFacts[math.random(1, #FunFacts)]
 
 local Window = Rayfield:CreateWindow({
 Name = "Noxius",
-Icon = 100574547642033,
+Icon = 90484559502038,
 ShowText = "Bug",
 
 LoadingTitle = "Downloading and Preloading assets...",  
