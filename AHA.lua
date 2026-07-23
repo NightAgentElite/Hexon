@@ -1670,6 +1670,16 @@ local function AddMimicESP(npc)
 	Billboard.AlwaysOnTop = true
 	Billboard.MaxDistance = 250
 
+	local UIListLayout = Instance.new("UIListLayout")
+
+UIListLayout.Padding = UDim.new(0, -20)
+UIListLayout.FillDirection = Enum.FillDirection.Vertical
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+
+UIListLayout.Parent = Billboard
+
 	local Text = Instance.new("TextLabel")
 	Text.Parent = Billboard
 	Text.Name = "Name"
@@ -1711,6 +1721,14 @@ local function ScanMimics()
 		AddMimicESP(npc)
 	end
 end
+
+MimicFolder.ChildAdded:Connect(function(npc)
+	task.wait(0.1)
+
+	if MimicESPEnabled then
+		AddMimicESP(npc)
+	end
+end)
 
 Visuals:CreateToggle({
 	Name = "Mimic ESP",
