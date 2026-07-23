@@ -2010,3 +2010,202 @@ Visuals:CreateToggle({
 })
 
 Visuals:CreateLabel("Toggles ESP for Patients.")
+
+
+local SecurityCameraESPEnabled = false
+local SecurityCameraESPObjects = {}
+
+local BrokenColor = Color3.fromRGB(150,150,150)
+local NotBrokenColor = Color3.fromRGB(203,203,203)
+
+local CameraList = {
+    workspace.Misc.Cameras["Check-In"],
+    workspace.Misc.Cameras.Lobby,
+    workspace.Misc.Cameras.Medical,
+    workspace.Misc.Cameras2.Emergency
+}
+
+
+local function AddCameraESP(camera)
+
+    if SecurityCameraESPObjects[camera] then
+        return
+    end
+
+    local cameraPart = camera:FindFirstChild("camera")
+    local mainLook = camera:FindFirstChild("MainLook")
+
+    if not cameraPart or not mainLook then
+        return
+    end
+
+
+    local Highlight = Instance.new("Highlight")
+    Highlight.Name = "SecurityCameraESP"
+    Highlight.Adornee = camera
+    Highlight.FillTransparency = 0.5
+    Highlight.OutlineTransparency = 0
+    Highlight.Parent = camera
+
+
+    local Billboard = Instance.new("BillboardGui")
+    Billboard.Name = "BillboardGui"
+    Billboard.Adornee = cameraPart
+    Billboard.Parent = camera
+    Billboard.Size = UDim2.fromOffset(150,60)
+    Billboard.StudsOffset = Vector3.new(0,0,0)
+    Billboard.AlwaysOnTop = true
+    Billboard.MaxDistance = 250
+
+
+    local UIListLayout = Instance.new("UIListLayout")
+    UIListLayout.Padding = UDim.new(0,-20)
+    UIListLayout.FillDirection = Enum.FillDirection.Vertical
+    UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+    UIListLayout.Parent = Billboard
+
+
+    local Name = Instance.new("TextLabel")
+    Name.Name = "Name"
+    Name.Parent = Billboard
+    Name.Size = UDim2.fromScale(1,1)
+    Name.BackgroundTransparency = 1
+    Name.TextScaled = false
+    Name.TextSize = 18
+    Name.Font = Enum.Font.FredokaOne
+    Name.TextColor3 = Color3.fromRGB(255,255,255)
+    Name.TextStrokeTransparency = 0
+    Name.LayoutOrder = 1
+    Name.Text = camera.Name
+
+
+    local NameStroke = Instance.new("UIStroke")
+    NameStroke.Thickness = 1
+    NameStroke.Color = Color3.fromRGB(0,0,0)
+    NameStroke.Parent = Name
+
+
+    local Status = Instance.new("TextLabel")
+    Status.Name = "Status"
+    Status.Parent = Billboard
+    Status.Size = UDim2.fromScale(1,1)
+    Status.BackgroundTransparency = 1
+    Status.TextScaled = false
+    Status.TextSize = 18
+    Status.Font = Enum.Font.FredokaOne
+    Status.TextStrokeTransparency = 0
+    Status.LayoutOrder = 2
+
+
+    local StatusStroke = Instance.new("UIStroke")
+    StatusStroke.Thickness = 1
+    StatusStroke.Color = Color3.fromRGB(0,0,0)
+    StatusStroke.Parent = Status
+
+
+    local function UpdateStatus()
+
+        if mainLook:FindFirstChild("PP") then
+
+            Status.Text = "Broken"
+            Status.TextColor3 = BrokenColor
+            Highlight.FillColor = BrokenColor
+
+        else
+
+            Status.Text = "Not Broken"
+            Status.TextColor3 = NotBrokenColor
+            Highlight.FillColor = NotBrokenColor
+
+        end
+
+    end
+
+
+    UpdateStatus()
+
+
+    mainLook.ChildAdded:Connect(function(child)
+
+        if child.Name == "PP" then
+            UpdateStatus()
+        end
+
+    end)
+
+
+    mainLook.ChildRemoved:Connect(function(child)
+
+        if child.Name == "PP" then
+            UpdateStatus()
+        end
+
+    end)
+
+
+    SecurityCameraESPObjects[camera] = {
+        Highlight = Highlight,
+        Billboard = Billboard
+    }
+
+end
+
+
+
+local function RemoveCameraESP()
+
+    for _, objects in pairs(SecurityCameraESPObjects) do
+
+        if objects.Highlight then
+            objects.Highlight:Destroy()
+        end
+
+        if objects.Billboard then
+            objects.Billboard:Destroy()
+        end
+
+    end
+
+    table.clear(SecurityCameraESPObjects)
+
+end
+
+
+
+local function ScanSecurityCameras()
+
+    for _, camera in ipairs(CameraList) do
+
+        AddCameraESP(camera)
+
+    end
+
+end
+
+
+
+Visuals:CreateToggle({
+    Name = "Security Camera ESP",
+    CurrentValue = false,
+
+    Callback = function(Value)
+
+        SecurityCameraESPEnabled = Value
+
+        if Value then
+
+            ScanSecurityCameras()
+
+        else
+
+            RemoveCameraESP()
+
+        end
+
+    end
+})
+
+
+Visuals:CreateLabel("Toggles ESP for security cameras.")
