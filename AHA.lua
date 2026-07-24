@@ -1763,18 +1763,23 @@ MimicFolder.ChildAdded:Connect(function(npc)
 end)
 
 Visuals:CreateToggle({
-	Name = "Mimic ESP",
-	CurrentValue = false,
+    Name = "Mimic ESP",
+    CurrentValue = false,
 
-	Callback = function(Value)
-		MimicESPEnabled = Value
+    Callback = function(Value)
+        MimicESPEnabled = Value
 
-		if Value then
-			ScanMimics()
-		else
-			RemoveMimicESP()
-		end
-	end
+        if Value then
+            task.spawn(function()
+                while MimicESPEnabled do
+                    ScanMimics()
+                    task.wait(1)
+                end
+            end)
+        else
+            RemoveMimicESP()
+        end
+    end
 })
 
 Visuals:CreateLabel("Toggles ESP for Mimics.")
